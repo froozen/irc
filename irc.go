@@ -31,6 +31,7 @@ type IRCEvent struct {
 
 // Parse parses an IRC signal and returns an *IRCEvent and an error
 func Parse(signal string) (*IRCEvent, error) {
+	var args []string
 	signalArgs := strings.Split(signal, " ")
 
 	// The next parsing steps definetly won't fail if this passes
@@ -73,11 +74,23 @@ func Parse(signal string) (*IRCEvent, error) {
 		// This means the second argument is the type
 		ircEvent.Type = signalArgs[1]
 
-		ircEvent.Arguments = signalArgs[2:]
+		args = signalArgs[2:]
 	} else {
 		ircEvent.Type = signalArgs[0]
 
-		ircEvent.Arguments = signalArgs[1:]
+		args = signalArgs[1:]
+	}
+
+	// Parse args
+	ircEvent.Arguments = args
+	for i, arg := range args {
+		// Detect the trailing argument and join it
+		if strings.HasPrefix(arg, ":") {
+			ircEvent.Arguments = args[:i+1]
+			ircEvent.Arguments[i] = strings.Join(args[i:], " ")
+			ircEvent.Arguments[i] = strings.TrimPrefix(ircEvent.Arguments[i], ":")
+			break
+		}
 	}
 
 	return ircEvent, nil

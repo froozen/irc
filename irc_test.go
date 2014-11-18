@@ -16,6 +16,7 @@ func TestParse(t *testing.T) {
 	parseTest(t, "JOIN #channel", "", "", "", "JOIN", "#channel")
 	parseTest(t, ":node.server.net PING node.server.net", "node.server.net", "",
 		"", "PING", "node.server.net")
+	parseTest(t, "PRIVMSG #channel :Some message", "", "", "", "PRIVMSG", "#channel", "Some message")
 }
 
 func parseTest(t *testing.T, signal, name, user, host, _type string, args ...string) {
