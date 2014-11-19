@@ -6,6 +6,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
+	fmt.Println("--- TestParse")
 	if _, err := Parse("JOIN"); err == nil {
 		t.Error("Accepts signals with to few arguments.")
 	}
