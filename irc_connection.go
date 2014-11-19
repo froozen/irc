@@ -13,7 +13,7 @@ type IRCConnection struct {
 	port       int
 }
 
-// Connect to an IRC server.
+// Connect connects to an IRC server.
 func Connect(address string, port int) (*IRCConnection, error) {
 	con := new(IRCConnection)
 	con.address = address
@@ -28,7 +28,7 @@ func Connect(address string, port int) (*IRCConnection, error) {
 	return con, nil
 }
 
-// Close the IRCConnection.
+// Close closes the IRCConnection.
 func (con *IRCConnection) Close() error {
 	err := con.connection.Close()
 	if err != nil {

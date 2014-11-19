@@ -29,7 +29,7 @@ type IRCEvent struct {
 	Arguments []string
 }
 
-// Parse parses an IRC signal and returns an *IRCEvent and an error
+// Parse parses an IRC signal.
 func Parse(signal string) (*IRCEvent, error) {
 	var args []string
 	signalArgs := strings.Split(signal, " ")
