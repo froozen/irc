@@ -39,3 +39,31 @@ func TestIRCRead(t *testing.T) {
 	}
 	con.Close()
 }
+
+func TestIRCSend(t *testing.T) {
+	fmt.Println("--- TestIRCSend")
+
+	con, _ := Connect("irc.freenode.net", 6667)
+
+	nick := &IRCEvent{Type: "NICK"}
+	nick.Arguments = make([]string, 1)
+	nick.Arguments[0] = "testnick"
+	con.SendIRCEvent(nick)
+
+	user := &IRCEvent{Type: "USER"}
+	user.Arguments = make([]string, 4)
+	user.Arguments[0] = "testnick"
+	user.Arguments[1] = "localhost"
+	user.Arguments[2] = "localhost"
+	user.Arguments[3] = "library test"
+	con.SendIRCEvent(user)
+
+	for {
+		ev, _ := con.ReadIRCEvent()
+		// Server recognized the client
+		if ev.Type == "433" || ev.Type == "MODE" {
+			break
+		}
+	}
+	con.Close()
+}
