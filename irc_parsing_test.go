@@ -71,3 +71,33 @@ func toStringTest(t *testing.T, event *Event, expected string) {
 		t.Errorf("Converting failed: converted: %s, expected %s", event, expected)
 	}
 }
+
+func TestFindOrigin(t *testing.T) {
+	fmt.Println("--- TestFindOrigin")
+
+	origin := NewEvent("PRIVMSG")
+	origin.SetArguments("#channel", "Hello friend")
+	if origin.FindOrigin() != "#channel" {
+		t.Error("Incorrect origin: found:", origin.FindOrigin(), "expected: #channel")
+	}
+
+	origin.SetArguments("myname", "Hello again")
+	origin.Name = "nickname"
+	if origin.FindOrigin() != "nickname" {
+		t.Error("Incorrect origin: found:", origin.FindOrigin(), "expected: nickname")
+	}
+}
+
+func ExampleEvent_FindOrigin() {
+	origin := NewEvent("PRIVMSG")
+	origin.SetArguments("#channel", "Hello friend")
+	fmt.Println(origin.FindOrigin())
+
+	origin.SetArguments("myname", "Hello again")
+	origin.Name = "nickname"
+	fmt.Println(origin.FindOrigin())
+
+	// Output:
+	// #channel
+	// nickname
+}

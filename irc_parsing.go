@@ -50,6 +50,15 @@ func (event *Event) String() string {
 	return signal
 }
 
+// FindOrigin returns the origin of the Event to reply to
+func (event *Event) FindOrigin() string {
+	if strings.HasPrefix(event.Arguments[0], "#") {
+		return event.Arguments[0]
+	} else {
+		return event.Name
+	}
+}
+
 // Parse parses an IRC signal.
 func Parse(signal string) (*Event, error) {
 	var args []string
