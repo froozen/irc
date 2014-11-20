@@ -24,26 +24,30 @@ func TestConnection(t *testing.T) {
 func TestReceive(t *testing.T) {
 	fmt.Println("--- TestReceive")
 
-	con, _ := Connect("irc.freenode.net", 6667)
+	con, err := Connect("irc.freenode.net", 6667)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer con.Close()
+
 	for i := 0; i < 3; i++ {
 		ev, err := con.Receive()
 		if err != nil {
-			t.Error("Error while reading:", err)
-
-			// The first three events on freenode should be notices
+			t.Fatal("Error while reading:", err)
 		} else if ev.Type != "NOTICE" {
+			// The first three events on freenode should be notices
 			t.Error(fmt.Sprintln("Unexpected signal:", ev.Type, ev.Arguments))
-		} else {
-			fmt.Println(ev.Type, ev.Arguments)
 		}
 	}
-	con.Close()
 }
 
 func TestSend(t *testing.T) {
 	fmt.Println("--- TestSend")
 
-	con, _ := Connect("irc.freenode.net", 6667)
+	con, err := Connect("irc.freenode.net", 6667)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	nick := &Event{Type: "NICK"}
 	nick.Arguments = make([]string, 1)
@@ -59,7 +63,10 @@ func TestSend(t *testing.T) {
 	con.Send(user)
 
 	for {
-		ev, _ := con.Receive()
+		ev, err := con.Receive()
+		if err != nil {
+			t.Fatal(err)
+		}
 		// Server recognized the client
 		if ev.Type == "433" || ev.Type == "MODE" {
 			break

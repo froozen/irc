@@ -21,8 +21,6 @@ func TestParse(t *testing.T) {
 }
 
 func parseTest(t *testing.T, signal, name, user, host, _type string, args ...string) {
-	fmt.Println("Testing:", signal)
-
 	event, err := Parse(signal)
 	if err != nil {
 		t.Error("Parsing failed:", err)
