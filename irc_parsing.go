@@ -24,6 +24,20 @@ type IRCEvent struct {
 	Arguments []string
 }
 
+// Convert to sendable IRC signal
+func (event *IRCEvent) String() string {
+	signal := event.Type
+	for _, arg := range event.Arguments {
+		// Detect trailing argument
+		if strings.Contains(arg, " ") {
+			signal += " :" + arg
+			break
+		}
+		signal += " " + arg
+	}
+	return signal
+}
+
 // Parse parses an IRC signal.
 func Parse(signal string) (*IRCEvent, error) {
 	var args []string
