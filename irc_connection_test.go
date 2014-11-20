@@ -20,3 +20,22 @@ func TestIRCConnection(t *testing.T) {
 		t.Error("Doesn't connect to valide host.")
 	}
 }
+
+func TestIRCRead(t *testing.T) {
+	fmt.Println("--- TestIRCRead")
+
+	con, _ := Connect("irc.freenode.net", 6667)
+	for i := 0; i < 3; i++ {
+		ev, err := con.ReadIRCEvent()
+		if err != nil {
+			t.Error("Error while reading:", err)
+
+			// The first three events on freenode should be notices
+		} else if ev.Type != "NOTICE" {
+			t.Error(fmt.Sprintln("Unexpected signal:", ev.Type, ev.Arguments))
+		} else {
+			fmt.Println(ev.Type, ev.Arguments)
+		}
+	}
+	con.Close()
+}
