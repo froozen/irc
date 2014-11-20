@@ -8,21 +8,21 @@ import (
 	"time"
 )
 
-// IRCConnection represents a connection to an IRC server.
-type IRCConnection struct {
+// Connection represents a connection to an IRC server.
+type Connection struct {
 	connection net.Conn
 	address    string
 	port       int
 	// Scanner for reading
 	scanner *bufio.Scanner
 	// Communation channels for send routine
-	send chan<- *IRCEvent
+	send chan<- *Event
 	quit chan<- bool
 }
 
 // Connect connects to an IRC server.
-func Connect(address string, port int) (*IRCConnection, error) {
-	con := new(IRCConnection)
+func Connect(address string, port int) (*Connection, error) {
+	con := new(Connection)
 	con.address = address
 	con.port = port
 
@@ -37,8 +37,8 @@ func Connect(address string, port int) (*IRCConnection, error) {
 	return con, nil
 }
 
-// Close closes the IRCConnection.
-func (con *IRCConnection) Close() error {
+// Close closes the Connection.
+func (con *Connection) Close() error {
 	con.quit <- true
 	err := con.connection.Close()
 	if err != nil {
@@ -47,8 +47,8 @@ func (con *IRCConnection) Close() error {
 	return nil
 }
 
-// ReadIRCEvent reads and parses the next line received by the IRCConnection
-func (con *IRCConnection) ReadIRCEvent() (*IRCEvent, error) {
+// Receive reads and parses the next line received by the Connection
+func (con *Connection) Receive() (*Event, error) {
 	if con.scanner.Scan() {
 		event, err := Parse(con.scanner.Text())
 		if err != nil {
@@ -68,8 +68,8 @@ func (con *IRCConnection) ReadIRCEvent() (*IRCEvent, error) {
 
 // startSendRoutine starts a routine that schedules the sending of signals to
 // prevent flooding
-func (con *IRCConnection) startSendRoutine() (chan *IRCEvent, chan bool) {
-	send := make(chan *IRCEvent)
+func (con *Connection) startSendRoutine() (chan *Event, chan bool) {
+	send := make(chan *Event)
 	quit := make(chan bool)
 
 	go func() {
@@ -86,7 +86,7 @@ func (con *IRCConnection) startSendRoutine() (chan *IRCEvent, chan bool) {
 	return send, quit
 }
 
-// SendIRCEvent sends a signal corresponding to an IRCEvent to the server
-func (con *IRCConnection) SendIRCEvent(event *IRCEvent) {
+// Send sends a signal corresponding to an Event to the server
+func (con *Connection) Send(event *Event) {
 	con.send <- event
 }

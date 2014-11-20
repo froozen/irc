@@ -12,8 +12,8 @@ import (
 	"strings"
 )
 
-// IRCEvent represents a parsed IRC signal
-type IRCEvent struct {
+// Event represents a parsed IRC signal
+type Event struct {
 	// Data representing the signal origin
 	Name string
 	User string
@@ -25,7 +25,7 @@ type IRCEvent struct {
 }
 
 // Convert to sendable IRC signal
-func (event *IRCEvent) String() string {
+func (event *Event) String() string {
 	signal := event.Type
 	for _, arg := range event.Arguments {
 		// Detect trailing argument
@@ -39,7 +39,7 @@ func (event *IRCEvent) String() string {
 }
 
 // Parse parses an IRC signal.
-func Parse(signal string) (*IRCEvent, error) {
+func Parse(signal string) (*Event, error) {
 	var args []string
 	signalArgs := strings.Split(signal, " ")
 
@@ -48,7 +48,7 @@ func Parse(signal string) (*IRCEvent, error) {
 		return nil, errors.New(fmt.Sprintf("\"%s\": Not enough arguments."))
 	}
 
-	ircEvent := new(IRCEvent)
+	ircEvent := new(Event)
 
 	// Signal has source
 	if strings.HasPrefix(signalArgs[0], ":") {

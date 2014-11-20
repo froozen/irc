@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestIRCConnection(t *testing.T) {
-	fmt.Println("--- TestIRCConnection")
+func TestConnection(t *testing.T) {
+	fmt.Println("--- TestConnection")
 
 	// This is assumed to be invalid
 	_, err := Connect("asdfasdfaasdf", 1)
@@ -21,12 +21,12 @@ func TestIRCConnection(t *testing.T) {
 	}
 }
 
-func TestIRCRead(t *testing.T) {
-	fmt.Println("--- TestIRCRead")
+func TestReceive(t *testing.T) {
+	fmt.Println("--- TestReceive")
 
 	con, _ := Connect("irc.freenode.net", 6667)
 	for i := 0; i < 3; i++ {
-		ev, err := con.ReadIRCEvent()
+		ev, err := con.Receive()
 		if err != nil {
 			t.Error("Error while reading:", err)
 
@@ -40,26 +40,26 @@ func TestIRCRead(t *testing.T) {
 	con.Close()
 }
 
-func TestIRCSend(t *testing.T) {
-	fmt.Println("--- TestIRCSend")
+func TestSend(t *testing.T) {
+	fmt.Println("--- TestSend")
 
 	con, _ := Connect("irc.freenode.net", 6667)
 
-	nick := &IRCEvent{Type: "NICK"}
+	nick := &Event{Type: "NICK"}
 	nick.Arguments = make([]string, 1)
 	nick.Arguments[0] = "testnick"
-	con.SendIRCEvent(nick)
+	con.Send(nick)
 
-	user := &IRCEvent{Type: "USER"}
+	user := &Event{Type: "USER"}
 	user.Arguments = make([]string, 4)
 	user.Arguments[0] = "testnick"
 	user.Arguments[1] = "localhost"
 	user.Arguments[2] = "localhost"
 	user.Arguments[3] = "library test"
-	con.SendIRCEvent(user)
+	con.Send(user)
 
 	for {
-		ev, _ := con.ReadIRCEvent()
+		ev, _ := con.Receive()
 		// Server recognized the client
 		if ev.Type == "433" || ev.Type == "MODE" {
 			break
