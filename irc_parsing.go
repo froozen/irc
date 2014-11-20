@@ -9,12 +9,7 @@ package irc
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"strings"
-)
-
-var (
-	nickMask *regexp.Regexp = regexp.MustCompile(":(.*?)!?(.*?)@?(.*)")
 )
 
 // IRCEvent represents a parsed IRC signal
