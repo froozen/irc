@@ -49,17 +49,12 @@ func TestSend(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	nick := &Event{Type: "NICK"}
-	nick.Arguments = make([]string, 1)
-	nick.Arguments[0] = "testnick"
+	nick := NewEvent("NICK")
+	nick.SetArguments("testnick")
 	con.Send(nick)
 
-	user := &Event{Type: "USER"}
-	user.Arguments = make([]string, 4)
-	user.Arguments[0] = "testnick"
-	user.Arguments[1] = "localhost"
-	user.Arguments[2] = "localhost"
-	user.Arguments[3] = "library test"
+	user := NewEvent("USER")
+	user.SetArguments("testnick", "localhost", "localhost", "library test")
 	con.Send(user)
 
 	for {

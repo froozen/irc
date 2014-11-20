@@ -24,6 +24,18 @@ type Event struct {
 	Arguments []string
 }
 
+// NewEvent creates a new Event, Event.Type being _type
+func NewEvent(_type string) *Event {
+	ev := new(Event)
+	ev.Type = _type
+	return ev
+}
+
+// SetArguments set ev.Arguments to args
+func (ev *Event) SetArguments(args ...string) {
+	ev.Arguments = args
+}
+
 // Convert to sendable IRC signal
 func (event *Event) String() string {
 	signal := event.Type

@@ -56,17 +56,13 @@ func parseTest(t *testing.T, signal, name, user, host, _type string, args ...str
 
 func TestToString(t *testing.T) {
 	fmt.Println("--- TestToString")
-	join := new(Event)
-	join.Type = "JOIN"
-	join.Arguments = make([]string, 1)
-	join.Arguments[0] = "#channel"
+
+	join := NewEvent("JOIN")
+	join.SetArguments("#channel")
 	toStringTest(t, join, "JOIN #channel")
 
-	privmsg := new(Event)
-	privmsg.Type = "PRIVMSG"
-	privmsg.Arguments = make([]string, 2)
-	privmsg.Arguments[0] = "#channel"
-	privmsg.Arguments[1] = "Hello there"
+	privmsg := NewEvent("PRIVMSG")
+	privmsg.SetArguments("#channel", "Hello there")
 	toStringTest(t, privmsg, "PRIVMSG #channel :Hello there")
 }
 
