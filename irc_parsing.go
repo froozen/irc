@@ -1,4 +1,4 @@
-// irc provides an implementation of the Internet Relay Chat protocol.
+// Package irc provides an implementation of the Internet Relay Chat protocol.
 // On top of that, it offers some shortcuts for easier and more comfortable
 // usage.
 //
@@ -32,8 +32,8 @@ func NewEvent(_type string) *Event {
 }
 
 // SetArguments set ev.Arguments to args
-func (ev *Event) SetArguments(args ...string) {
-	ev.Arguments = args
+func (event *Event) SetArguments(args ...string) {
+	event.Arguments = args
 }
 
 // Convert to sendable IRC signal
@@ -54,9 +54,8 @@ func (event *Event) String() string {
 func (event *Event) FindOrigin() string {
 	if strings.HasPrefix(event.Arguments[0], "#") {
 		return event.Arguments[0]
-	} else {
-		return event.Name
 	}
+	return event.Name
 }
 
 // Parse parses an IRC signal.

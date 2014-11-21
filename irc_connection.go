@@ -65,13 +65,12 @@ func (con *Connection) Receive() (*Event, error) {
 
 		return event, nil
 
-	} else {
-		if con.scanner.Err() != nil {
-			return nil, errors.New(fmt.Sprintln("While reading:", con.scanner.Err()))
-		} else {
-			return nil, errors.New("Connection closed.")
-		}
 	}
+
+	if con.scanner.Err() != nil {
+		return nil, errors.New(fmt.Sprintln("While reading:", con.scanner.Err()))
+	}
+	return nil, errors.New("Connection closed.")
 }
 
 // startSendRoutine starts a routine that schedules the sending of signals to
