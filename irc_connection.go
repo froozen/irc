@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"sync"
 	"time"
 )
 
@@ -18,6 +19,8 @@ type Connection struct {
 	// Communation channels for send routine
 	send chan<- *Event
 	quit chan<- bool
+	// There can be only one receiver at a time
+	receiveLock sync.Mutex
 }
 
 // Connect connects to an IRC server.
@@ -48,7 +51,12 @@ func (con *Connection) Close() error {
 }
 
 // Receive reads and parses the next line received by the Connection
+// This call is locked by a mutex, so only one goroutine can receive at a time.
 func (con *Connection) Receive() (*Event, error) {
+	// Make sure only one routine is receiving at a time
+	con.receiveLock.Lock()
+	defer con.receiveLock.Unlock()
+
 	if con.scanner.Scan() {
 		event, err := Parse(con.scanner.Text())
 		if err != nil {
